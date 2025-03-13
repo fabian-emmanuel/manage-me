@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	md "manage-me/models"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -60,6 +61,29 @@ func main() {
 
 	// API Routes
 	api := app.Group("/api/v1")
+
+	app.Get("/", func(ctx *fiber.Ctx) error {
+		return ctx.Status(200).JSON(fiber.Map{"msg": "Welcome to ManageMe API"})
+	})
+
+	var users []md.User
+
+	app.Post("/register", func(ctx *fiber.Ctx) error {
+		user := &md.User{}
+		if err := ctx.BodyParser(user); err != nil {
+			return ctx.Status(400).JSON(fiber.Map{"error": err.Error()})
+		}
+
+		if user.Email == "" || user.Password == "" || user.FirstName == "" || user.LastName == "" {
+			return ctx.Status(400).JSON(fiber.Map{"error": "Missing required fields"})
+		}
+
+		user.ID = len(users) + 1
+		users = append(users, *user)
+
+		return ctx.Status(200).JSON(fiber.Map{"message": "User created successfully", "data": user})
+	})
+
 	api.Get("/ping", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{"message": "pong"})
 	})
