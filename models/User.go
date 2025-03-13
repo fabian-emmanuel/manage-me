@@ -1,9 +1,13 @@
 package models
 
+import (
+	"go.mongodb.org/mongo-driver/v2/bson"
+)
+
 type User struct {
-	ID        int    `json:"id"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	Email     string `json:"email"`
-	Password  string `json:"password"`
+	ID        bson.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
+	FirstName string        `json:"firstName"`
+	LastName  string        `json:"lastName"`
+	Email     string        `json:"email"`
+	Password  string        `json:"password"`
 }
